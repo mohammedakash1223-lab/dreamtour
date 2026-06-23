@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (function() {
+        var suppress = function(message) {
+          if (!message) return false;
+          var msg = String(message).toLowerCase();
+          return msg.indexOf('script error') !== -1 || msg.indexOf('cross-origin') !== -1;
+        };
+        window.onerror = function(message, source, lineno, colno, error) {
+          if (suppress(message)) {
+            console.warn('Suppressed browser/CORS/iframe script error:', message);
+            return true; // prevent error from bubbling to global console
+          }
+          return false;
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && event.reason) {
+            var m = String(event.reason.message || event.reason);
+            if (suppress(m)) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }
+        }, true);
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dream Tour</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
